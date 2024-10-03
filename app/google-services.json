@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "826335565243",
+    "project_id": "android-firebase-masterc-ea6ba",
+    "storage_bucket": "android-firebase-masterc-ea6ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826335565243:android:733b1d2ebc92eb6ed6a09e",
+        "android_client_info": {
+          "package_name": "com.jsn.android_firebase_masterclass"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlYInEkB6R1rjBdZmjFnxQr2cAuStkjbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
