@@ -20,12 +20,12 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<AppCompatButton>(R.id.shortLinkCreateBtn).setOnClickListener() {
-            createDynamicThenShortLink(this@MainActivity)
+            createDynamicLinkThenShortLink(this@MainActivity)
         }
     }
 
     // Here, in this method. it creates deep link first then short deep link automatically inside shortLinkAsync. So, it's not needed -> (deep link code + short link code).
-    private fun createDynamicThenShortLink(context: Context) {
+    private fun createDynamicLinkThenShortLink(context: Context) {
         val id = 670
         Firebase.dynamicLinks.shortLinkAsync {
             link = Uri.parse("https://jsn.fbmc/?invitedby=test-user2&id=$id")
