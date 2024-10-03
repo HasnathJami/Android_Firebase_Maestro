@@ -24,31 +24,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Here, in this method. it creates deep link first then short deep link automatically inside shortLinkAsync. So, it's not needed -> (deep link code + short link code).
     private fun createDynamicThenShortLink(context: Context) {
-        val id = 67
+        val id = 670
         Firebase.dynamicLinks.shortLinkAsync {
-            link = Uri.parse("https://www.jsn-jami.com/invitedby=jami&age=${id}")
-            domainUriPrefix = "https://example.page.link/summer-sale"
+            link = Uri.parse("https://jsn.fbmc/?invitedby=test-user2&id=$id")
+            domainUriPrefix = "https://mvvmtodo.page.link"
             androidParameters(context.packageName) {
                 minimumVersion = 1
             }
-//            iosParameters("com.jsn") {
+//            iosParameters("ios-package-name") {
 //                minimumVersion = "1.0"
 //            }
             socialMetaTagParameters {
                 title = "Deep Link"
                 description = "share this link with your friends"
-//                imageUrl = Uri.parse("https://r.bing.com/rp/fY0wJ-QaIKghQ87Qs9ufsshTAws.png")
+                imageUrl = Uri.parse("https://r.bing.com/rp/fY0wJ-QaIKghQ87Qs9ufsshTAws.png")
             }
-        }.addOnSuccessListener { shortLink ->
-            findViewById<TextView>(R.id.shortLinkTv).text = shortLink.toString()
-            Log.d("CheckTestSuccess", shortLink.toString())
+        }.addOnSuccessListener { shortLinkResult ->
+            findViewById<TextView>(R.id.shortLinkTv).text = shortLinkResult.shortLink.toString()
+            Log.d("CheckTestSuccess", shortLinkResult.shortLink.toString())
         }.addOnFailureListener { fail ->
             Log.d("CheckTestError", "Deep Link Creation Failed:$fail")
         }
     }
-
-    // Function to create a dynamic link
-
-
 }

@@ -14,6 +14,12 @@
         android:theme="@style/Theme.Android_Firebase_Masterclass"
         tools:targetApi="31">
         <activity
+            android:name=".UserDetailsActivity"
+            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".base.BaseClickActionActivity"-->
+<!--            android:exported="false" />-->
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -22,14 +28,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeepLinkLandingActivity"
+        <activity
+            android:name=".LandingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <!-- <data -->
+                <!-- android:host="mvvmtodo.page.link" -->
+                <!-- android:scheme="https" /> -->
                 <data
-                    android:host="www.jsn-jami.com"
+                    android:host="jsn.fbmc"
                     android:scheme="https" />
             </intent-filter>
         </activity>
