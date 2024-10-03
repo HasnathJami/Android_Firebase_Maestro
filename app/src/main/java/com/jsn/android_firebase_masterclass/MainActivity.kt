@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
     private fun createDynamicLinkThenShortLink(context: Context) {
         val id = 670
         Firebase.dynamicLinks.shortLinkAsync {
-            link = Uri.parse("https://jsn.fbmc/?invitedby=test-user2&id=$id")
-            domainUriPrefix = "https://mvvmtodo.page.link"
+            link = Uri.parse("https://jsn.fmc/?invitedby=test-user2&id=$id")
+            domainUriPrefix = "https://jsnfmc.page.link"
             androidParameters(context.packageName) {
                 minimumVersion = 1
             }

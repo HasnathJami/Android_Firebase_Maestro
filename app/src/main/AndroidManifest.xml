@@ -48,7 +48,7 @@
                 <!-- android:host="mvvmtodo.page.link" -->
                 <!-- android:scheme="https" /> -->
                 <data
-                    android:host="jsn.fbmc"
+                    android:host="jsn.fmc"
                     android:scheme="https" />
             </intent-filter>
         </activity>
