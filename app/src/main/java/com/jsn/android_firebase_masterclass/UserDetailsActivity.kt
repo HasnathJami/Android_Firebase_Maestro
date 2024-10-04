@@ -11,6 +11,7 @@ class UserDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
 
+        //For DeepLink
         if (intent.hasExtra(BundleKeys.ID_KEY)) {
             val id = intent.getStringExtra(BundleKeys.ID_KEY)
             findViewById<TextView>(R.id.idTv).text = id
@@ -21,11 +22,22 @@ class UserDetailsActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.invitedByTv).text = name
         }
 
+        //For Firebase
+        if (intent.hasExtra(BundleKeys.USER_ID_KEY)) {
+            val id = intent.getStringExtra(BundleKeys.USER_ID_KEY)
+            findViewById<TextView>(R.id.idTv).text = id
+        }
+
+        if (intent.hasExtra(BundleKeys.MESSAGE_ID_KEY)) {
+            val name = intent.getStringExtra(BundleKeys.MESSAGE_ID_KEY)
+            findViewById<TextView>(R.id.invitedByTv).text = name
+        }
+
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if(intent.hasExtra(BundleKeys.CLICK_ACTION_KEY)) {
+        if (intent.hasExtra(BundleKeys.CLICK_ACTION_KEY)) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

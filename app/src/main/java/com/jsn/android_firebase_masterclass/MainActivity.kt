@@ -12,6 +12,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.dynamiclinks.ktx.socialMetaTagParameters
 import com.google.firebase.ktx.Firebase
+import com.jsn.android_firebase_masterclass.service.TokenProvider
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +23,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<AppCompatButton>(R.id.shortLinkCreateBtn).setOnClickListener() {
             createDynamicLinkThenShortLink(this@MainActivity)
         }
+
+        Log.d("checkFirebaseToken",  TokenProvider.getFirebaseToken())
+
     }
+
+
 
     // Here, in this method. it creates deep link first then short deep link automatically inside shortLinkAsync. So, it's not needed -> (deep link code + short link code).
     private fun createDynamicLinkThenShortLink(context: Context) {

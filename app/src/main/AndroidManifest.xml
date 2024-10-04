@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,20 +12,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Android_Firebase_Masterclass"
-        tools:targetApi="31">
-        <service android:name=".service.MyFirebaseMessagingService"
+        android:theme="@style/Theme.Android_Firebase_Masterclass">
+
+        <service
+            android:name=".service.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".UserDetailsActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".base.BaseClickActionActivity"-->
-<!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -44,9 +42,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- <data -->
-                <!-- android:host="mvvmtodo.page.link" -->
-                <!-- android:scheme="https" /> -->
                 <data
                     android:host="jsn.fmc"
                     android:scheme="https" />

@@ -1,71 +1,128 @@
 package com.jsn.android_firebase_masterclass.service
 
-import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.jsn.android_firebase_masterclass.LandingActivity
 import com.jsn.android_firebase_masterclass.R
 import com.jsn.android_firebase_masterclass.utils.BundleKeys
+import com.jsn.android_firebase_masterclass.utils.BundleKeys.IS_FROM_FIREBASE_PUSH_KEY
+import kotlin.random.Random
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    private val TAG = this.javaClass.name
+
+    private var notificationBuilder: NotificationCompat.Builder? = null
+    private var notificationManager: NotificationManager? = null
+    private var pendingIntent: PendingIntent? = null
+
+    private val CHANNEL_ID = "channel_id"
+    private val CHANNEL_NAME = "Firebase_Masterclass"
+
+    companion object {
+        private var NOTIFICATION_ID = 6578
+        const val FCM_PAYLOAD = "FCM"
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, "onCreate: ")
+        createNotificationChannel()
+    }
+
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        Log.d("checkToken1",token)
+    }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        val title = remoteMessage.notification?.title
-        val body = remoteMessage.notification?.body
+        try {
+            NOTIFICATION_ID = Random.nextInt(100000000)
+            notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        val dataPayload = remoteMessage.data
-        val messageId = dataPayload["messageId"]
-        val userId = dataPayload["userId"]
-
-        Log.d("checkTestData1",title.toString())
-        Log.d("checkTestData2",body.toString())
-        Log.d("checkTestData3",dataPayload.toString())
-        Log.d("checkTestData4",messageId.toString())
-        Log.d("checkTestData5",userId.toString())
-        showNotification(title, body, messageId, userId)
-    }
-
-    private fun createPendingIntent(messageId: String?, userId: String?): PendingIntent {
-        val intent = Intent(this, LandingActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(BundleKeys.IS_FROM_FIREBASE_PUSH_KEY, true)
-            putExtra(BundleKeys.MESSAGE_ID_KEY, messageId)
-            putExtra(BundleKeys.USER_ID_KEY, userId)
+            try {
+                Log.d(TAG, "MESSAGING Data ${remoteMessage.data}")
+                Log.d(TAG, "MESSAGING Notification ${remoteMessage.notification}")
+                if (remoteMessage.data.isNotEmpty()) {
+                    createPendingIntent(remoteMessage.data)
+                    fireNotification(remoteMessage.data)
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "onMessageReceived: ${e.message}")
+                e.printStackTrace()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
     }
 
-    private fun showNotification(
-        title: String?,
-        message: String?,
-        messageId: String?,
-        userId: String?
-    ) {
-        val notificationBuilder = NotificationCompat.Builder(this, "my_channel_id")
-            .setSmallIcon(R.drawable.ic_launcher_background).setContentTitle(title)
-            .setContentText(message).setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(createPendingIntent(messageId, userId)).setAutoCancel(true)
+    private fun createPendingIntent(dataPayloadMsg: Map<String, String>?=null) {
+        val intent = Intent(this, LandingActivity::class.java)
 
-        val notificationManager = NotificationManagerCompat.from(this)
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+         intent.putExtra(IS_FROM_FIREBASE_PUSH_KEY, FCM_PAYLOAD)
+        dataPayloadMsg?.get("title")?.let {
+            intent.putExtra("titleKey", it)
         }
-        notificationManager.notify(0, notificationBuilder.build())
+        dataPayloadMsg?.get("messageId")?.let {
+            intent.putExtra(BundleKeys.MESSAGE_ID_KEY, it)
+        }
+        dataPayloadMsg?.get("userId")?.let {
+            intent.putExtra(BundleKeys.USER_ID_KEY, it)
+        }
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(
+                this, System.currentTimeMillis().toInt(), intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            PendingIntent.getActivity(
+                this, System.currentTimeMillis().toInt(), intent,
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
     }
 
-    override fun onNewToken(p0: String) {
-        super.onNewToken(p0)
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            val notificationChannel = NotificationChannel(
+                CHANNEL_ID, CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.setShowBadge(true)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun fireNotification(dataPayloadMsg: Map<String, String>? = null) {
+        notificationBuilder = NotificationCompat.Builder(application, CHANNEL_ID)
+            .setContentText(dataPayloadMsg?.get("body"))
+            .setContentTitle(dataPayloadMsg?.get("title"))
+        .setStyle(NotificationCompat.BigTextStyle().bigText(dataPayloadMsg?.get("body")))
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setColor(ContextCompat.getColor(this, R.color.black))
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        notificationManager?.notify(NOTIFICATION_ID, notificationBuilder?.build())
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
     }
 }
+

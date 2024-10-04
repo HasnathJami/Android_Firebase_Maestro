@@ -15,7 +15,15 @@ import com.jsn.android_firebase_masterclass.utils.QueryParameterKeys
 abstract class BaseClickActionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("checkCall","BCAA Call")
+    }
+
+    protected fun performFirebaseAction(userId: String?, messageId: String?) {
+        val intent = Intent(this, UserDetailsActivity::class.java)
+        intent.putExtra(BundleKeys.CLICK_ACTION_KEY, ClickActionType.USER_DETAILS.toString())
+        intent.putExtra(BundleKeys.USER_ID_KEY, userId)
+        intent.putExtra(BundleKeys.MESSAGE_ID_KEY, messageId)
+        startActivity(intent)
+        finish()
     }
 
     protected fun performDeepLinkAction(deepLinkUri: Uri?) {
@@ -23,14 +31,21 @@ abstract class BaseClickActionActivity : AppCompatActivity() {
 //            val invitedBy = deepLinkUri.getQueryParameter("invitedby")
 //            val id = deepLinkUri.getQueryParameter("id")
             val bundle = Bundle()
-            bundle.putString(BundleKeys.CLICK_ACTION_KEY,
+            bundle.putString(
+                BundleKeys.CLICK_ACTION_KEY,
                 ClickActionType.USER_DETAILS.toString()
             )
             if (deepLinkUri.getQueryParameter(QueryParameterKeys.INVITED_BY_QUERY_PARAMETER_KEY) != null) {
-                bundle.putString(BundleKeys.INVITED_BY_KEY, deepLinkUri.getQueryParameter(QueryParameterKeys.INVITED_BY_QUERY_PARAMETER_KEY))
+                bundle.putString(
+                    BundleKeys.INVITED_BY_KEY,
+                    deepLinkUri.getQueryParameter(QueryParameterKeys.INVITED_BY_QUERY_PARAMETER_KEY)
+                )
             }
             if (deepLinkUri.getQueryParameter("id") != null) {
-                bundle.putString(BundleKeys.ID_KEY, deepLinkUri.getQueryParameter(QueryParameterKeys.ID_QUERY_PARAMETER_KEY))
+                bundle.putString(
+                    BundleKeys.ID_KEY,
+                    deepLinkUri.getQueryParameter(QueryParameterKeys.ID_QUERY_PARAMETER_KEY)
+                )
             }
             showClickActionActivity(bundle)
 

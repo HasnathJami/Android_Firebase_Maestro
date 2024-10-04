@@ -11,12 +11,16 @@ class LandingActivity : BaseClickActionActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Check for the dynamic link
-        Log.d("checkCall", "LD Call")
+        // Extract data from the Intent
+        val messageId = intent.getStringExtra("messageId")
+        val userId = intent.getStringExtra("userId")
+
         if (intent.hasExtra(BundleKeys.IS_FROM_FIREBASE_PUSH_KEY)) {
             // Firebase Action
+            performFirebaseAction(messageId, userId)
             Log.d("checkTestFB","coming from firebase push")
         } else {
+            // Check for the dynamic link
             getDeepLinkData()
         }
     }
