@@ -33,20 +33,34 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("checkFirebaseToken", TokenProvider.getFirebaseToken())
 
-      //  generateCrash()
+//        generateCrash()
+//        generateCrashWithTryCatch()
 
     }
 
     private fun generateCrash() {
-    //    try {
         FirebaseCrashlytics.getInstance()
-            .log("Checking IllegalAccessException") //this line is optional
-//            FirebaseCrashlytics.getInstance().recordException()
-        FirebaseCrashlytics.getInstance().setCustomKey("illegal_exception_key", "illegal_exception" ?: "")
-            throw IllegalAccessException("Crash Test IllegalAccessException")
-       // } catch (e: Exception) {
-    //    }
+            .log("Checking InstantiationException") //this line is optional
+        FirebaseCrashlytics.getInstance()
+            .setCustomKey("exception_key", "InstantiationException" ?: "")
+        throw InstantiationException("Crash Test InstantiationException")
     }
+
+    //this won't generate crash and send crash data to crashlytics for this try catch block
+//    private fun generateCrashWithTryCatch() {
+//        try {
+//            FirebaseCrashlytics.getInstance()
+//                .setCustomKey("exception_key", "InstantiationException" ?: "")
+//            throw CloneNotSupportedException("Crash Test CloneNotSupportedException")
+//
+//        } catch (e: Exception) {
+//            FirebaseCrashlytics.getInstance()
+//                .log("Checking CloneNotSupportedException") //this line is optional
+//            FirebaseCrashlytics.getInstance()
+//                .setCustomKey("exception_key", "CloneNotSupportedException" ?: "")
+//            FirebaseCrashlytics.getInstance().recordException(e)
+//        }
+//    }
 
 
     // Here, in this method. it creates deep link first then short deep link automatically inside shortLinkAsync. So, it's not needed -> (deep link code + short link code).
