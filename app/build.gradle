@@ -51,4 +51,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx' // Check for the latest version
     implementation 'com.google.firebase:firebase-messaging'
+
+    implementation libs.glide
 }

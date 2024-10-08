@@ -4,10 +4,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -40,7 +45,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("checkToken1",token)
+        Log.d("checkForNewToken", token)
         FirebaseMessaging.getInstance().subscribeToTopic("all")
             .addOnCompleteListener { task ->
                 var msg = "Subscribed"
@@ -73,10 +78,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun createPendingIntent(dataPayloadMsg: Map<String, String>?=null) {
+    private fun createPendingIntent(dataPayloadMsg: Map<String, String>? = null) {
         val intent = Intent(this, LandingActivity::class.java)
 
-         intent.putExtra(IS_FROM_FIREBASE_PUSH_KEY, FCM_PAYLOAD)
+        intent.putExtra(IS_FROM_FIREBASE_PUSH_KEY, FCM_PAYLOAD)
         dataPayloadMsg?.get("title")?.let {
             intent.putExtra("titleKey", it)
         }
@@ -118,14 +123,98 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationBuilder = NotificationCompat.Builder(application, CHANNEL_ID)
             .setContentText(dataPayloadMsg?.get("body"))
             .setContentTitle(dataPayloadMsg?.get("title"))
-        .setStyle(NotificationCompat.BigTextStyle().bigText(dataPayloadMsg?.get("body")))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(dataPayloadMsg?.get("body")))
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setColor(ContextCompat.getColor(this, R.color.black))
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        notificationManager?.notify(NOTIFICATION_ID, notificationBuilder?.build())
+        if (dataPayloadMsg!!.containsKey("badge")) {
+            Log.d(Companion::class.java.name, "fireNotification: $" + dataPayloadMsg["badge"])
+            notificationBuilder!!.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+            notificationBuilder!!.setNumber(dataPayloadMsg["badge"]!!.toInt())
+        }
+
+        if (dataPayloadMsg.containsKey("image") && dataPayloadMsg["image"]!!.isNullOrEmpty()
+                .not()
+        ) {
+            if (!dataPayloadMsg!!["image"]!!.contains("https")) {
+                // if we want to set image from our backend
+//            showNotificationWithImage(
+//                BaseUrlCollection.Companion.getNOTIFICATION_IMAGE_URL() +
+//                        dataPayloadMsg["image"]
+//            )
+
+            } else {
+                showNotificationWithImage(dataPayloadMsg["image"]!!)
+            }
+        } else {
+            notificationManager?.notify(NOTIFICATION_ID, notificationBuilder?.build())
+        }
+
+
+    }
+
+    private fun showNotificationWithImage(imageUrl: String) {
+        Glide.with(applicationContext)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap?>?
+                ) {
+                    try {
+                        notificationBuilder!!.setLargeIcon(resource)
+                            .setStyle(
+                                NotificationCompat.BigPictureStyle()
+                                    .bigPicture(resource)
+//                                    .bigLargeIcon(null)
+
+                            )
+
+                        notificationManager!!.notify(NOTIFICATION_ID, notificationBuilder!!.build())
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                        Log.d(
+                            MyFirebaseMessagingService.javaClass.name,
+                            "onPostExecute: " + e.message
+                        )
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+            })
+
+
+        /* // Coil
+        ImageRequest request = new ImageRequest.Builder(getApplicationContext())
+                .data(imageUrl)
+                .target(new Target() {
+                    @Override
+                    public void onStart(@org.jetbrains.annotations.Nullable Drawable drawable) {
+                    }
+
+                    @Override
+                    public void onError(@org.jetbrains.annotations.Nullable Drawable drawable) {
+                    }
+
+                    @Override
+                    public void onSuccess(@NotNull Drawable drawable) {
+                        Bitmap bitmapDrawable = ((BitmapDrawable) drawable).getBitmap();
+
+                        notificationBuilder.setLargeIcon(bitmapDrawable)
+                                .setStyle(new NotificationCompat.BigPictureStyle()
+                                        .bigPicture(bitmapDrawable)
+                                        .bigLargeIcon(null));
+
+                        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+                    }
+                })
+                .build();
+        Coil.imageLoader(getApplicationContext()).enqueue(request);*/
     }
 
 
