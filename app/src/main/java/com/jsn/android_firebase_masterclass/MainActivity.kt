@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("checkFirebaseToken", TokenProvider.getFirebaseToken())
 
-        generateCrash()
+      //  generateCrash()
 
     }
 
