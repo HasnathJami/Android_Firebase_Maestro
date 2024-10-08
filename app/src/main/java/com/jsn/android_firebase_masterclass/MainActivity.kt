@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
@@ -22,12 +24,29 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<AppCompatButton>(R.id.shortLinkCreateBtn).setOnClickListener() {
             createDynamicLinkThenShortLink(this@MainActivity)
+
+            // Firebase Analytics
+            val bundle = Bundle()
+            bundle.putBoolean("isButtonClicked", true)
+            FirebaseAnalytics.getInstance(this@MainActivity).logEvent("ButtonClicked", bundle)
         }
 
-        Log.d("checkFirebaseToken",  TokenProvider.getFirebaseToken())
+        Log.d("checkFirebaseToken", TokenProvider.getFirebaseToken())
+
+        generateCrash()
 
     }
 
+    private fun generateCrash() {
+    //    try {
+        FirebaseCrashlytics.getInstance()
+            .log("Checking IllegalAccessException") //this line is optional
+//            FirebaseCrashlytics.getInstance().recordException()
+        FirebaseCrashlytics.getInstance().setCustomKey("illegal_exception_key", "illegal_exception" ?: "")
+            throw IllegalAccessException("Crash Test IllegalAccessException")
+       // } catch (e: Exception) {
+    //    }
+    }
 
 
     // Here, in this method. it creates deep link first then short deep link automatically inside shortLinkAsync. So, it's not needed -> (deep link code + short link code).
