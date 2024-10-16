@@ -17,7 +17,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.jsn.android_firebase_masterclass.MainActivity
 import com.jsn.android_firebase_masterclass.R
+import com.jsn.android_firebase_masterclass.model.Item
 import com.jsn.android_firebase_masterclass.model.SocialAccProviderData
+import com.jsn.android_firebase_masterclass.network.database.dao.FirebaseFireStoreDao
 import com.jsn.android_firebase_masterclass.ui.item.ItemListActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -45,7 +47,22 @@ class LoginActivity : AppCompatActivity() {
         if (!getTokenFromSharedPrefs().isNullOrEmpty()) {
             startActivity(Intent(this, MainActivity::class.java))
         }
+        insertDataToDB()
 
+    }
+
+    private fun insertDataToDB() {
+        val item = Item(
+            id = "3",
+            name = "Jami HC",
+            description = "Test J",
+            imageUrl = "https://picsum.photos/200/300"
+        )
+        //Insert Data to Real Time DB
+        // FirebaseDao.addItem(item)
+
+        //Insert Data to Real Time DB
+        FirebaseFireStoreDao.addItem(item)
     }
 
     private fun signInWithGoogle() {

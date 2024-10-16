@@ -45,15 +45,42 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
+    //Glide
+    implementation libs.glide
+
+    //Firebase BOM
     implementation platform('com.google.firebase:firebase-bom:33.4.0')
-    //Firebase Libraries
+
+    //Firebase Analytics, Craslytics
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-dynamic-links-ktx' // Check for the latest version
+
+    //Firebase Dynamic Links
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
+
+    //Firebase Push Notifications
     implementation 'com.google.firebase:firebase-messaging'
 
+    //Firebase Authentication
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
 
-    implementation libs.glide
+    //Realtime Database
+    implementation 'com.google.firebase:firebase-database-ktx:20.2.0'
+
+    //FireStore Database
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.3.0'
+
+    //Coroutines
+    def coroutineVersion = "1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    def lifecycle_version = "2.5.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
 }
