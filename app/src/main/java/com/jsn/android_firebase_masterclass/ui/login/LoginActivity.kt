@@ -19,7 +19,6 @@ import com.jsn.android_firebase_masterclass.MainActivity
 import com.jsn.android_firebase_masterclass.R
 import com.jsn.android_firebase_masterclass.model.Item
 import com.jsn.android_firebase_masterclass.model.SocialAccProviderData
-import com.jsn.android_firebase_masterclass.network.database.dao.FirebaseFireStoreDao
 import com.jsn.android_firebase_masterclass.ui.item.ItemListActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -47,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         if (!getTokenFromSharedPrefs().isNullOrEmpty()) {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        insertDataToDB()
+//        insertDataToDB()
 
     }
 
@@ -62,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
         // FirebaseDao.addItem(item)
 
         //Insert Data to Real Time DB
-        FirebaseFireStoreDao.addItem(item)
+        //FirebaseFireStoreDao.addItem(item)
     }
 
     private fun signInWithGoogle() {
