@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.jsn.android_firebase_masterclass"
-        minSdk 21
+        minSdk 23
         targetSdk 34
         versionCode 6
         versionName "1.6"
@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx' // Check for the latest version
     implementation 'com.google.firebase:firebase-messaging'
+
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
 
     implementation libs.glide
 }
